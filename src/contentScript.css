@@ -1,0 +1,538 @@
+/* Cora Extension Styles */
+
+/* Import Montserrat Font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+/* Cora Action Button */
+.cora-action-button {
+  font-family: 'Montserrat', sans-serif !important;
+  padding: 6px 16px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  border-radius: 4px !important;
+  background: #003d52 !important;
+  color: white !important;
+  border: 1px solid #003d52 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  text-transform: none !important;
+  margin-right: 8px !important;
+}
+
+.cora-action-button:hover {
+  background: #FF8C42 !important;
+  border-color: #FF8C42 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.cora-action-button:active {
+  transform: translateY(0) !important;
+}
+
+.cora-action-button .cx-MuiButton-label {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 14px !important;
+}
+
+/* Side Panel */
+.cora-panel {
+  position: fixed;
+  top: 0;
+  right: -420px;
+  width: 400px;
+  height: 100vh;
+  background: white;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s ease-out;
+  font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.cora-panel-visible {
+  right: 0;
+}
+
+/* Panel Header */
+.cora-panel-header {
+  background: #3d4c5c;
+  color: white;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.cora-panel-title {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.cora-logo {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+}
+
+.cora-panel-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.cora-panel-about,
+.cora-panel-settings,
+.cora-panel-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cora-icon {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+}
+
+.cora-panel-about:hover,
+.cora-panel-settings:hover,
+.cora-panel-close:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: scale(1.1);
+}
+
+.cora-panel-about:active,
+.cora-panel-settings:active,
+.cora-panel-close:active {
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: scale(0.95);
+}
+
+/* Course Title */
+.cora-panel-course-title {
+  font-family: 'Montserrat', sans-serif;
+  background: #FF8C42;
+  padding: 20px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #2d3748;
+  text-align: center;
+  line-height: 1.3;
+  flex-shrink: 0;
+}
+
+/* Tabs */
+.cora-panel-tabs {
+  display: flex;
+  background: white;
+  padding: 0 20px;
+  border-bottom: 2px solid #e5e5e5;
+  flex-shrink: 0;
+}
+
+.cora-tab {
+  font-family: 'Montserrat', sans-serif;
+  padding: 16px 0;
+  margin-right: 32px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 16px;
+  font-weight: 600;
+  color: #999;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cora-tab:hover {
+  color: #FF8C42;
+}
+
+.cora-tab-active {
+  color: #FF8C42;
+  border-bottom-color: #FF8C42;
+}
+
+/* Panel Content */
+.cora-panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* Tab Content */
+.cora-tab-content {
+  display: none;
+}
+
+.cora-tab-content-active {
+  display: block;
+}
+
+/* Sections */
+.cora-section {
+  margin-bottom: 24px;
+}
+
+.cora-section-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #2d3748;
+  letter-spacing: 0.3px;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+}
+
+.cora-info-icon {
+  width: 18px;
+  height: 18px;
+  cursor: help;
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.cora-info-icon:hover {
+  opacity: 1;
+}
+
+.cora-section-content {
+  background: #f9f9f9;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+}
+
+.cora-summary-box {
+  font-family: 'Montserrat', sans-serif;
+  background: #e5ddc3;
+  border: none;
+  border-left: 4px solid #FF8C42;
+  padding: 20px;
+  color: #2d3748;
+  line-height: 1.6;
+}
+
+.cora-section-content p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* Ratings Grid */
+.cora-ratings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  background: #e5ddc3;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.cora-rating-box {
+  background: #6bcf7f;
+  padding: 0;
+  border-radius: 12px;
+  text-align: center;
+  border: none;
+  transition: transform 0.2s;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cora-rating-box:hover {
+  transform: translateY(-2px);
+}
+
+.cora-rating-value {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 56px;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.cora-rating-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  color: #2d3748;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Links */
+.cora-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cora-link {
+  font-family: 'Montserrat', sans-serif;
+  background: #f5f5f5;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+  color: #2d3748;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.2s;
+  display: block;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cora-link:hover {
+  background: white;
+  border-color: #FF8C42;
+  box-shadow: 0 2px 8px rgba(255, 140, 66, 0.2);
+  color: #FF8C42;
+}
+
+/* Load More Button */
+.cora-load-more {
+  font-family: 'Montserrat', sans-serif;
+  width: 100%;
+  padding: 14px;
+  background: white;
+  border: 2px solid #FF8C42;
+  border-radius: 8px;
+  color: #FF8C42;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cora-load-more:hover {
+  background: #FF8C42;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(255, 140, 66, 0.3);
+}
+
+/* Waitlist Probability Section */
+.cora-waitlist-box {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  border: 1px solid #e5ddc3;
+}
+
+.cora-waitlist-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.cora-waitlist-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.cora-waitlist-position {
+  font-size: 24px;
+  font-weight: 700;
+  color: #FF8C42;
+}
+
+.cora-progress-bar {
+  width: 100%;
+  height: 12px;
+  background: #e5ddc3;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.cora-progress-fill {
+  height: 100%;
+  background: #FF8C42;
+  border-radius: 6px;
+  transition: width 0.3s ease;
+}
+
+.cora-waitlist-stats {
+  text-align: center;
+}
+
+.cora-waitlist-percentage {
+  font-size: 48px;
+  font-weight: 700;
+  color: #FF8C42;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.cora-waitlist-description {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Panel Footer */
+.cora-panel-footer {
+  background: white;
+  padding: 12px 20px;
+  border-top: 1px solid #e5e5e5;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.cora-version {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: #999;
+  font-weight: 500;
+}
+
+/* About Screen Styles */
+.cora-about-screen {
+  padding: 0;
+}
+
+.cora-about-section {
+  margin-bottom: 16px;
+}
+
+.cora-about-section-btn {
+  font-family: 'Montserrat', sans-serif;
+  width: 100%;
+  padding: 16px 20px;
+  background: #e5e5e5;
+  border: none;
+  border-radius: 0;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 400;
+  color: #2d3748;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.cora-about-section-btn:hover {
+  background: #d5d5d5;
+}
+
+.cora-about-toggle {
+  font-size: 24px;
+  font-weight: 300;
+  color: #666;
+}
+
+.cora-about-section-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background: white;
+}
+
+.cora-about-text {
+  font-family: 'Montserrat', sans-serif;
+  padding: 24px 20px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #2d3748;
+}
+
+.cora-about-back {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.cora-panel-course-title .cora-about-back:hover {
+  opacity: 0.7;
+}
+
+/* Rating Source Badge */
+.cora-rating-source-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  padding: 4px 12px;
+  background: #FF8C42;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  border-radius: 6px;
+  cursor: help;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.cora-rating-source-badge:hover {
+  background: #e67700;
+  transform: scale(1.05);
+}
+
+/* Tooltip on hover */
+.cora-rating-source-badge::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #003d52;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: normal;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 10001;
+}
+
+/* Tooltip arrow */
+.cora-rating-source-badge::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #003d52;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 10001;
+}
+
+/* Show tooltip on hover */
+.cora-rating-source-badge:hover::after,
+.cora-rating-source-badge:hover::before {
+  opacity: 1;
+}
+

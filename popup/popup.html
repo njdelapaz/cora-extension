@@ -3,69 +3,198 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cora Extension</title>
+  <title>CoRA Extension</title>
   <style>
     body {
-      width: 300px;
-      min-height: 200px;
-      padding: 20px;
+      width: 320px;
+      min-height: 240px;
+      padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #F5EED3;
+      color: #333;
+    }
+    
+    .header {
+      background: #003d52;
       color: white;
+      padding: 20px;
+      text-align: center;
     }
     
     h1 {
-      font-size: 24px;
-      margin: 0 0 20px 0;
-      text-align: center;
+      font-size: 28px;
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: 1px;
     }
     
-    .container {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
+    .content {
+      padding: 20px;
     }
     
-    button {
-      padding: 12px 24px;
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #003d52;
+      letter-spacing: 0.5px;
+      margin: 0 0 12px 0;
+      text-transform: uppercase;
+    }
+    
+    .info-box {
+      background: #fdf9e8;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid #e5ddc3;
+      margin-bottom: 16px;
+    }
+    
+    .info-box p {
+      margin: 0 0 12px 0;
       font-size: 14px;
-      border: none;
-      border-radius: 8px;
-      background-color: white;
-      color: #667eea;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      line-height: 1.6;
+      color: #333;
     }
     
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    .info-box p:last-child {
+      margin-bottom: 0;
     }
     
-    button:active {
-      transform: translateY(0);
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 8px;
     }
     
-    #status {
-      padding: 12px;
-      background-color: rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
+    .step-number {
+      background: #FF8C42;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    
+    .step-text {
+      flex: 1;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    
+    .footer {
       text-align: center;
-      min-height: 20px;
-      backdrop-filter: blur(10px);
+      padding: 16px;
+      border-top: 2px solid #e5ddc3;
+    }
+    
+    .version {
+      font-size: 12px;
+      color: #999;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      background: #003d52;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 12px;
     }
   </style>
 </head>
 <body>
-  <h1>🌟 Cora Extension</h1>
-  <div class="container">
-    <button id="actionBtn">Click Me!</button>
-    <button id="pingBtn">Ping Content Script</button>
-    <div id="status">Ready</div>
+  <div class="header">
+    <h1>CoRA</h1>
   </div>
+  
+  <div class="content">
+    <div class="status-badge" id="status">● Active</div>
+    
+    <h2 class="section-title">How to Use</h2>
+    <div class="info-box">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-text">Search for courses on the UVA SIS website</div>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-text">Expand a course to view its details</div>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-text">Click the "✨ Cora" button to view course insights</div>
+      </div>
+    </div>
+    
+    <h2 class="section-title">About</h2>
+    <div class="info-box">
+      <p>CoRA provides AI-powered course insights, ratings, and relevant links to help you make informed decisions about your classes.</p>
+    </div>
+    
+    <h2 class="section-title">Cache</h2>
+    <div class="info-box">
+      <div id="cache-stats" style="font-size: 13px; color: #666; margin-bottom: 12px;">
+        Loading cache stats...
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button id="clear-cache-btn" style="
+          flex: 1;
+          padding: 10px;
+          background: white;
+          color: #dc3545;
+          border: 2px solid #dc3545;
+          border-radius: 6px;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+        ">Clear Cache</button>
+      </div>
+    </div>
+    
+    <h2 class="section-title">AI Logs</h2>
+    <div class="info-box" style="display: flex; gap: 8px; padding: 12px;">
+      <button id="download-logs-btn" style="
+        flex: 1;
+        padding: 10px;
+        background: #003d52;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      ">Download Logs</button>
+      <button id="clear-logs-btn" style="
+        flex: 1;
+        padding: 10px;
+        background: white;
+        color: #dc3545;
+        border: 2px solid #dc3545;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      ">Clear Logs</button>
+    </div>
+    <div id="log-message" style="display: none; padding: 8px 20px; margin-top: 8px; border-radius: 6px; font-size: 12px; text-align: center;"></div>
+  </div>
+  
+  <div class="footer">
+    <div class="version" id="version">Loading version...</div>
+  </div>
+  
   <script src="popup.js"></script>
 </body>
 </html>

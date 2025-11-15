@@ -1,0 +1,26 @@
+# Environment variables
+.env
+
+# Node modules (if using)
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+
+# Extension packages
+*.crx
+*.pem
+*.zip
+
+# Logs
+*.log
+
+# Temporary files
+tmp/
+temp/
+

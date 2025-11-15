@@ -1,22 +1,54 @@
 {
   "manifest_version": 3,
   "name": "Cora Extension",
-  "version": "1.0.0",
+  "version": "1.0.8",
   "description": "A Chrome extension built with Cora",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "downloads"
+  ],
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*"
   ],
   "action": {
-    "default_popup": "popup/popup.html"
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "assets/cora_mini_logo.png",
+      "32": "assets/cora_mini_logo.png",
+      "48": "assets/cora_mini_logo.png",
+      "128": "assets/cora_mini_logo.png"
+    }
+  },
+  "icons": {
+    "16": "assets/cora_mini_logo.png",
+    "32": "assets/cora_mini_logo.png",
+    "48": "assets/cora_mini_logo.png",
+    "128": "assets/cora_mini_logo.png"
   },
   "background": {
-    "service_worker": "src/background.js"
+    "service_worker": "src/background.js",
+    "type": "module"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["src/contentScript.js"]
+      "matches": ["https://sisuva.admin.virginia.edu/*"],
+      "js": ["src/contentScript.js"],
+      "css": ["src/contentScript.css"],
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/cora_logo_white.png",
+        "assets/question-mark.svg",
+        "assets/settings-gear.svg",
+        "assets/x-icon.svg",
+        "assets/info-mini-icon.svg"
+      ],
+      "matches": ["https://sisuva.admin.virginia.edu/*"]
     }
   ]
 }
