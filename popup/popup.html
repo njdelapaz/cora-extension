@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cora Extension</title>
+  <style>
+    body {
+      width: 300px;
+      min-height: 200px;
+      padding: 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    h1 {
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      text-align: center;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    button {
+      padding: 12px 24px;
+      font-size: 14px;
+      border: none;
+      border-radius: 8px;
+      background-color: white;
+      color: #667eea;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    #status {
+      padding: 12px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      text-align: center;
+      min-height: 20px;
+      backdrop-filter: blur(10px);
+    }
+  </style>
+</head>
+<body>
+  <h1>🌟 Cora Extension</h1>
+  <div class="container">
+    <button id="actionBtn">Click Me!</button>
+    <button id="pingBtn">Ping Content Script</button>
+    <div id="status">Ready</div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
+
