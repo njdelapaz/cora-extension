@@ -1,6 +1,6 @@
-# Cora Extension
+# CoRA Extension
 
-A Chrome extension built for the Claude Hackathon 2025 that enhances the UVA SIS (Student Information System) course search experience.
+**Course Research Assistant** - A Chrome extension built for the Claude Hackathon 2025 that enhances the UVA SIS (Student Information System) course search experience with AI-powered course and professor insights.
 
 ## How It Works
 
@@ -8,10 +8,10 @@ When you're browsing courses on the UVA SIS website:
 
 1. **Navigate** to any course search page on `sisuva.admin.virginia.edu`
 2. **Expand** a course section by clicking on it to see the detailed information
-3. **Look** for the purple "✨ Cora" button that appears next to the three-dot menu
-4. **Click** the Cora button to see a popup with course information (more features coming soon!)
+3. **Click** the "✨ Cora" button that appears in the expanded section
+4. **View** AI-generated summaries, ratings, and relevant links for the course and professor
 
-The extension intelligently detects when you expand or collapse course sections and automatically shows/hides the Cora button accordingly.
+The extension intelligently searches the web, scrapes relevant content, filters it using AI, and generates concise summaries to help you make informed course selection decisions.
 
 ## Getting Started
 
@@ -22,46 +22,43 @@ The extension intelligently detects when you expand or collapse course sections 
 3. Click "Load unpacked"
 4. Select the `cora-extension` directory
 
-Go 
+### Configure API Keys
 
-### Development
+1. Click the CoRA extension icon in your browser toolbar
+2. Click the settings gear icon
+3. Paste your OpenAI API key
+4. (Optional) Update Google Custom Search credentials in `src/config.js`
 
-The extension consists of three main components:
+## Tech Stack
 
-- **Content Script** (`src/contentScript.js`): Runs in the context of web pages and can interact with the DOM
-- **Background Script** (`src/background.js`): Service worker that runs in the background and handles events
-- **Popup** (`popup/popup.html` & `popup/popup.js`): The UI that appears when clicking the extension icon
+### Frontend Architecture
+- **Chrome Extension Manifest V3**: Modern extension framework with service workers
+- **Vanilla JavaScript**: No framework dependencies for optimal performance
+- **CSS3**: Custom styling with Montserrat font and responsive design
+- **DOM Manipulation**: Direct interaction with UVA SIS pages
 
-### Features
+### Backend Services
+- **OpenAI GPT-5 Models**: 
+  - `gpt-5-mini`: Fast filtering and page summarization with minimal reasoning
+  - Final rating generation with low reasoning effort
+  - Uses the `/v1/responses` API endpoint
+- **Google Custom Search API**: Web searches for course-related content
+  - Targeted searches on Reddit (r/uva) and theCourseForum
+  - Progressive search strategy with fallbacks
 
-- ✅ **SIS Integration**: Works specifically on `sisuva.admin.virginia.edu`
-- ✅ **Smart Button Injection**: Automatically adds a "Cora" button to expanded course sections
-- ✅ **Dynamic Detection**: Uses MutationObserver to detect when courses are expanded/collapsed
-- ✅ **Modern UI**: Beautiful gradient-styled buttons and modal popups
-- ✅ **Course Information Display**: Shows course section, instructor, and status information
-- ✅ Manifest V3 compliant
-- ✅ Content script with CSS injection
-- ✅ Background service worker ready for future features
+### Data Pipeline
+1. **Search**: Google Custom Search API finds relevant pages
+2. **Scrape**: Fetch and extract main content from URLs
+3. **Filter**: GPT-5-mini filters content for course/professor relevance
+4. **Summarize**: GPT-5-mini generates concise 80-word summaries with quotes
+5. **Rate**: GPT-5-mini produces final ratings and consolidated summaries
+6. **Cache**: Results stored in `chrome.storage.local` for instant retrieval
 
-### Customization
 
-- Edit `manifest.json` to add permissions, update the name, or configure content scripts
-- Modify `popup/popup.html` and `popup/popup.js` to customize the popup UI
-- Update `src/contentScript.js` to interact with web pages
-- Enhance `src/background.js` to handle background tasks and events
-
-### Debugging
-
-- **Popup**: Right-click the extension icon → Inspect popup
-- **Background Script**: Go to `chrome://extensions/` → Click "service worker" under your extension
-- **Content Script**: Open DevTools on any webpage → Check the Console tab
-
-## Development Notes
 
 - The extension is configured to only run on `sisuva.admin.virginia.edu` for security and performance
-- Uses MutationObserver for efficient DOM monitoring without polling
-- Styled to match the SIS interface with Material-UI-inspired components
-- The modal popup is currently a placeholder - future versions will include enhanced features
+- All AI processing happens client-side using OpenAI's API
+- Cache TTL is set to 30 days with a maximum of 100 entries
 
 ## License
 

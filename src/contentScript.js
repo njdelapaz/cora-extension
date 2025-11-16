@@ -466,9 +466,10 @@ function showAbout() {
           </button>
           <div class="cora-about-section-content" data-content="2">
             <div class="cora-about-text">
-              The agent Claude by Anthropic implemented a program that completes the AI summaries. The 
-              program web scrapes from UVA course related pages, performs very specific web searches on 
-              results, then provides the appropriate AI summaries based on crowd consensus.
+              The majority of the code was implemented by Claude by Anthropic. The program web scrapes 
+              from UVA course related pages, performs very specific web searches on Reddit and 
+              theCourseForum, completes an optimized AI agentic workflow to compile the data, and finally
+              provides the appropriate AI summaries and grading based on crowd consensus.
             </div>
           </div>
         </div>
@@ -761,7 +762,7 @@ function displayResults(result) {
         <div class="cora-section">
           <h3 class="cora-section-title">
             RATINGS & DIFFICULTY 
-            <img src="${chrome.runtime.getURL('assets/info-mini-icon.svg')}" alt="Info" class="cora-info-icon" title="Ratings are sourced from theCourseForum when available, otherwise calculated using CoRA's AI rubric" />
+            <img src="${chrome.runtime.getURL('assets/info-mini-icon.svg')}" alt="Info" class="cora-info-icon" />
             ${ratingSourceHTML}
           </h3>
           <div class="cora-ratings-grid">
