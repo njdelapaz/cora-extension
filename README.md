@@ -24,10 +24,10 @@ The extension intelligently searches the web, scrapes relevant content, filters 
 
 ### Configure API Keys
 
-1. Click the CoRA extension icon in your browser toolbar
+1. Click the CoRA extension button into a course
 2. Click the settings gear icon
 3. Paste your OpenAI API key
-4. (Optional) Update Google Custom Search credentials in `src/config.js`
+4. (Optional) Update Google Custom Search credentials in `src/config.js`... it currently uses Nathan's search engine
 
 ## Tech Stack
 
@@ -40,7 +40,7 @@ The extension intelligently searches the web, scrapes relevant content, filters 
 ### Backend Services
 - **OpenAI GPT-5 Models**: 
   - `gpt-5-mini`: Fast filtering and page summarization with minimal reasoning
-  - Final rating generation with low reasoning effort
+  - Final rating generation with (low) reasoning effort for quality and speed
   - Uses the `/v1/responses` API endpoint
 - **Google Custom Search API**: Web searches for course-related content
   - Targeted searches on Reddit (r/uva) and theCourseForum
