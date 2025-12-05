@@ -68,3 +68,4 @@ async function testCourseAnalyzer() {
 // Run the test
 testCourseAnalyzer();
 
+

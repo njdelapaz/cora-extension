@@ -122,3 +122,4 @@ Store keys in Chrome's local storage - see `API_KEYS_SETUP.md` for details
 
 The `.env` file serves as a secure reference that won't be committed to Git, and you can copy the values into your config.
 
+
