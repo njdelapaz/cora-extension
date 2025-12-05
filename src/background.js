@@ -6,8 +6,10 @@ import { config, loadConfig, isConfigured } from './config.js';
 import { CourseAnalyzer } from './services/courseAnalyzer.js';
 import { aiLogger } from './services/logger.js';
 import { cacheService } from './services/cacheService.js';
+import { HooslistService } from './services/hooslistService.js';
 
 let courseAnalyzer = null;
+let hooslistService = null;
 
 // Initialize the course analyzer
 async function initializeCourseAnalyzer() {
@@ -170,7 +172,28 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       });
     return true;
   }
-  
+
+  // Handle enrollment data request
+  if (request.action === 'getEnrollmentData') {
+    console.log('[Cora][Background] Received getEnrollmentData request');
+    const { termCode, classNumber } = request;
+
+    // Initialize HoosList service if not already done
+    if (!hooslistService) {
+      hooslistService = new HooslistService();
+    }
+
+    hooslistService.getClassEnrollments(termCode, classNumber)
+      .then((result) => {
+        sendResponse(result);
+      })
+      .catch((error) => {
+        console.error('[Cora][Background] Failed to get enrollment data:', error);
+        sendResponse({ success: false, error: error.message });
+      });
+    return true;
+  }
+
   return false;
 });
 

@@ -54,15 +54,20 @@ function createPanel(courseInfo, state = 'loading') {
         </button>
       </div>
     </div>
-    
+
     <div class="cora-panel-course-title">
       ${courseInfo.courseTitle || courseInfo.courseName || 'Course Information'}
     </div>
-    
+
+    <div class="cora-panel-tabs">
+      <button class="cora-tab cora-tab-active" data-tab="summary">Summary</button>
+      <button class="cora-tab" data-tab="enrollment">Enrollment</button>
+    </div>
+
     <div class="cora-panel-content">
       ${state === 'loading' ? loadingContent : ''}
     </div>
-    
+
     <div class="cora-panel-footer">
       <span class="cora-version">v${CORA_VERSION}</span>
     </div>
@@ -74,7 +79,29 @@ function createPanel(courseInfo, state = 'loading') {
   setTimeout(() => {
     panel.classList.add('cora-panel-visible');
   }, 10);
-  
+
+  // Tab switching functionality
+  const tabs = panel.querySelectorAll('.cora-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Remove active class from all tabs
+      tabs.forEach(t => t.classList.remove('cora-tab-active'));
+      // Add active class to clicked tab
+      tab.classList.add('cora-tab-active');
+
+      // Switch tab content
+      const tabName = tab.dataset.tab;
+      const content = panel.querySelector('.cora-panel-content');
+      const allTabContents = content.querySelectorAll('.cora-tab-content');
+
+      allTabContents.forEach(tc => tc.classList.remove('cora-tab-content-active'));
+      const activeTabContent = content.querySelector(`[data-tab-content="${tabName}"]`);
+      if (activeTabContent) {
+        activeTabContent.classList.add('cora-tab-content-active');
+      }
+    });
+  });
+
   // About button
   const aboutBtn = panel.querySelector('.cora-panel-about');
   if (aboutBtn) {
@@ -82,7 +109,7 @@ function createPanel(courseInfo, state = 'loading') {
       showAbout();
     });
   }
-  
+
   // Settings button
   const settingsBtn = panel.querySelector('.cora-panel-settings');
   if (settingsBtn) {
@@ -90,7 +117,7 @@ function createPanel(courseInfo, state = 'loading') {
       showSettings();
     });
   }
-  
+
   // Close panel when clicking X
   panel.querySelector('.cora-panel-close').addEventListener('click', () => {
     console.log('[Cora][Panel] Closing panel');
@@ -758,10 +785,10 @@ function displayResults(result) {
   const content = currentPanel.querySelector('.cora-panel-content');
   if (content) {
     content.innerHTML = `
-      <div class="cora-tab-content cora-tab-content-active" id="summary-content">
+      <div class="cora-tab-content cora-tab-content-active" data-tab-content="summary">
         <div class="cora-section">
           <h3 class="cora-section-title">
-            RATINGS & DIFFICULTY 
+            RATINGS & DIFFICULTY
             <img src="${chrome.runtime.getURL('assets/info-mini-icon.svg')}" alt="Info" class="cora-info-icon" />
             ${ratingSourceHTML}
           </h3>
@@ -776,21 +803,21 @@ function displayResults(result) {
             </div>
           </div>
         </div>
-        
+
         <div class="cora-section">
           <h3 class="cora-section-title">AI COURSE SUMMARY</h3>
           <div class="cora-section-content cora-summary-box">
             ${courseSummary}
           </div>
         </div>
-        
+
         <div class="cora-section">
           <h3 class="cora-section-title">AI PROFESSOR SUMMARY</h3>
           <div class="cora-section-content cora-summary-box">
             ${professorSummary}
           </div>
         </div>
-        
+
         <div class="cora-section">
           <h3 class="cora-section-title">RELEVANT LINKS</h3>
           <div class="cora-links">
@@ -798,10 +825,314 @@ function displayResults(result) {
           </div>
         </div>
       </div>
+
+      <div class="cora-tab-content" data-tab-content="enrollment">
+        <div class="cora-section">
+          <h3 class="cora-section-title">ENROLLMENT HISTORY</h3>
+          <div id="enrollment-graph-container" style="min-height: 300px; display: flex; align-items: center; justify-content: center;">
+            <p style="color: #999;">Loading enrollment data...</p>
+          </div>
+        </div>
+      </div>
     `;
+
+    // Fetch and display enrollment data
+    fetchAndDisplayEnrollment(result.courseInfo);
   }
   
   console.log('[Cora][Display] Results displayed successfully');
+}
+
+// Fetch and display enrollment data
+async function fetchAndDisplayEnrollment(courseInfo) {
+  console.log('[Cora][Enrollment] Fetching enrollment data for:', courseInfo);
+
+  const container = document.getElementById('enrollment-graph-container');
+  if (!container) {
+    console.error('[Cora][Enrollment] Container not found');
+    return;
+  }
+
+  // Validate that we have the required data
+  if (!courseInfo.termCode || courseInfo.termCode === 'N/A') {
+    container.innerHTML = '<p style="color: #999; text-align: center;">Term code not available. Cannot load enrollment data.</p>';
+    return;
+  }
+
+  if (!courseInfo.classNumber || courseInfo.classNumber === 'N/A') {
+    container.innerHTML = '<p style="color: #999; text-align: center;">Class number not available. Cannot load enrollment data.</p>';
+    return;
+  }
+
+  try {
+    // Check if extension context is valid
+    if (!chrome.runtime?.id) {
+      container.innerHTML = '<p style="color: #ff4444; text-align: center;">Extension was reloaded. Please refresh this page.</p>';
+      return;
+    }
+
+    console.log(`[Cora][Enrollment] Requesting data for term ${courseInfo.termCode}, class ${courseInfo.classNumber}`);
+
+    const response = await new Promise((resolve, reject) => {
+      chrome.runtime.sendMessage(
+        {
+          action: 'getEnrollmentData',
+          termCode: courseInfo.termCode,
+          classNumber: courseInfo.classNumber
+        },
+        (response) => {
+          if (chrome.runtime.lastError) {
+            reject(new Error(chrome.runtime.lastError.message));
+          } else {
+            resolve(response);
+          }
+        }
+      );
+    });
+
+    console.log('[Cora][Enrollment] Received response:', response);
+
+    if (!response.success) {
+      container.innerHTML = `<p style="color: #ff4444; text-align: center;">Failed to load enrollment data: ${response.error}</p>`;
+      return;
+    }
+
+    if (!response.data || response.data.length === 0) {
+      container.innerHTML = '<p style="color: #999; text-align: center;">No enrollment data available for this class.</p>';
+      return;
+    }
+
+    // Recreate Date objects (they get serialized to strings in Chrome messaging)
+    const enrollmentData = response.data.map(entry => {
+      const date = new Date(entry.timestamp || entry.date);
+      // Validate the date
+      if (isNaN(date.getTime())) {
+        console.warn('[Cora][Enrollment] Invalid date for entry:', entry);
+        return { ...entry, date: new Date() }; // Fallback to current date
+      }
+      return { ...entry, date };
+    });
+
+    // Display the enrollment graph
+    displayEnrollmentGraph(enrollmentData, container);
+
+  } catch (error) {
+    console.error('[Cora][Enrollment] Error fetching enrollment data:', error);
+    container.innerHTML = `<p style="color: #ff4444; text-align: center;">Error: ${error.message}</p>`;
+  }
+}
+
+// Display enrollment graph
+function displayEnrollmentGraph(enrollmentData, container) {
+  console.log('[Cora][Enrollment] Displaying graph with', enrollmentData.length, 'data points');
+
+  // Sort data by date
+  const sortedData = [...enrollmentData].sort((a, b) => a.date - b.date);
+
+  // Calculate dimensions
+  const width = 360;
+  const height = 250;
+  const padding = { top: 20, right: 20, bottom: 40, left: 50 };
+  const graphWidth = width - padding.left - padding.right;
+  const graphHeight = height - padding.top - padding.bottom;
+
+  // Find min/max values
+  const enrolledValues = sortedData.map(d => d.enrolled);
+  const waitlistValues = sortedData.map(d => d.waitlist);
+  const maxEnrolled = Math.max(...enrolledValues, 0);
+  const maxWaitlist = Math.max(...waitlistValues, 0);
+  const maxValue = Math.max(maxEnrolled, maxWaitlist, 10); // At least 10 for scale
+
+  // Create SVG
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', width);
+  svg.setAttribute('height', height);
+  svg.style.display = 'block';
+  svg.style.margin = '0 auto';
+
+  // Create scales
+  const xScale = (index) => padding.left + (index / (sortedData.length - 1 || 1)) * graphWidth;
+  const yScale = (value) => padding.top + graphHeight - (value / maxValue) * graphHeight;
+
+  // Draw grid lines
+  const gridColor = '#e5e5e5';
+  for (let i = 0; i <= 5; i++) {
+    const y = padding.top + (i / 5) * graphHeight;
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', padding.left);
+    line.setAttribute('y1', y);
+    line.setAttribute('x2', padding.left + graphWidth);
+    line.setAttribute('y2', y);
+    line.setAttribute('stroke', gridColor);
+    line.setAttribute('stroke-width', '1');
+    svg.appendChild(line);
+
+    // Y-axis labels
+    const value = Math.round(maxValue * (1 - i / 5));
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', padding.left - 10);
+    text.setAttribute('y', y + 4);
+    text.setAttribute('text-anchor', 'end');
+    text.setAttribute('font-size', '10');
+    text.setAttribute('fill', '#666');
+    text.textContent = value;
+    svg.appendChild(text);
+  }
+
+  // Draw enrolled line
+  if (sortedData.length > 0) {
+    const enrolledPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    let pathData = `M ${xScale(0)} ${yScale(sortedData[0].enrolled)}`;
+    for (let i = 1; i < sortedData.length; i++) {
+      pathData += ` L ${xScale(i)} ${yScale(sortedData[i].enrolled)}`;
+    }
+    enrolledPath.setAttribute('d', pathData);
+    enrolledPath.setAttribute('fill', 'none');
+    enrolledPath.setAttribute('stroke', '#FF8C42');
+    enrolledPath.setAttribute('stroke-width', '2');
+    svg.appendChild(enrolledPath);
+
+    // Draw waitlist line
+    const waitlistPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    pathData = `M ${xScale(0)} ${yScale(sortedData[0].waitlist)}`;
+    for (let i = 1; i < sortedData.length; i++) {
+      pathData += ` L ${xScale(i)} ${yScale(sortedData[i].waitlist)}`;
+    }
+    waitlistPath.setAttribute('d', pathData);
+    waitlistPath.setAttribute('fill', 'none');
+    waitlistPath.setAttribute('stroke', '#003d52');
+    waitlistPath.setAttribute('stroke-width', '2');
+    waitlistPath.setAttribute('stroke-dasharray', '5,5');
+    svg.appendChild(waitlistPath);
+  }
+
+  // Add hover points
+  sortedData.forEach((point, index) => {
+    // Enrolled point
+    const enrolledCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    enrolledCircle.setAttribute('cx', xScale(index));
+    enrolledCircle.setAttribute('cy', yScale(point.enrolled));
+    enrolledCircle.setAttribute('r', '4');
+    enrolledCircle.setAttribute('fill', '#FF8C42');
+    enrolledCircle.setAttribute('stroke', 'white');
+    enrolledCircle.setAttribute('stroke-width', '2');
+    enrolledCircle.style.cursor = 'pointer';
+
+    // Waitlist point
+    const waitlistCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    waitlistCircle.setAttribute('cx', xScale(index));
+    waitlistCircle.setAttribute('cy', yScale(point.waitlist));
+    waitlistCircle.setAttribute('r', '4');
+    waitlistCircle.setAttribute('fill', '#003d52');
+    waitlistCircle.setAttribute('stroke', 'white');
+    waitlistCircle.setAttribute('stroke-width', '2');
+    waitlistCircle.style.cursor = 'pointer';
+
+    // Format date for tooltip
+    const dateStr = point.date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit'
+    });
+
+    // Add hover events
+    const showTooltip = () => {
+      const tooltip = document.getElementById('enrollment-tooltip');
+      if (tooltip) {
+        tooltip.innerHTML = `
+          <div style="font-weight: 600; margin-bottom: 4px;">${dateStr}</div>
+          <div style="color: #FF8C42;">Enrolled: ${point.enrolled}</div>
+          <div style="color: #003d52;">Waitlist: ${point.waitlist}</div>
+        `;
+        tooltip.style.display = 'block';
+      }
+    };
+
+    const hideTooltip = () => {
+      const tooltip = document.getElementById('enrollment-tooltip');
+      if (tooltip) {
+        tooltip.style.display = 'none';
+      }
+    };
+
+    enrolledCircle.addEventListener('mouseenter', showTooltip);
+    enrolledCircle.addEventListener('mouseleave', hideTooltip);
+    waitlistCircle.addEventListener('mouseenter', showTooltip);
+    waitlistCircle.addEventListener('mouseleave', hideTooltip);
+
+    svg.appendChild(enrolledCircle);
+    svg.appendChild(waitlistCircle);
+  });
+
+  // X-axis labels (first and last date)
+  if (sortedData.length > 0) {
+    const firstDate = sortedData[0].date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const lastDate = sortedData[sortedData.length - 1].date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+    const firstLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    firstLabel.setAttribute('x', padding.left);
+    firstLabel.setAttribute('y', height - 10);
+    firstLabel.setAttribute('text-anchor', 'start');
+    firstLabel.setAttribute('font-size', '10');
+    firstLabel.setAttribute('fill', '#666');
+    firstLabel.textContent = firstDate;
+    svg.appendChild(firstLabel);
+
+    const lastLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    lastLabel.setAttribute('x', padding.left + graphWidth);
+    lastLabel.setAttribute('y', height - 10);
+    lastLabel.setAttribute('text-anchor', 'end');
+    lastLabel.setAttribute('font-size', '10');
+    lastLabel.setAttribute('fill', '#666');
+    lastLabel.textContent = lastDate;
+    svg.appendChild(lastLabel);
+  }
+
+  // Create legend
+  const legend = document.createElement('div');
+  legend.style.cssText = 'display: flex; justify-content: center; gap: 20px; margin-top: 16px; font-size: 12px;';
+  legend.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 6px;">
+      <div style="width: 20px; height: 2px; background: #FF8C42;"></div>
+      <span>Enrolled</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 6px;">
+      <div style="width: 20px; height: 2px; background: #003d52; border-top: 2px dashed #003d52;"></div>
+      <span>Waitlist</span>
+    </div>
+  `;
+
+  // Create tooltip
+  const tooltip = document.createElement('div');
+  tooltip.id = 'enrollment-tooltip';
+  tooltip.style.cssText = `
+    display: none;
+    position: absolute;
+    background: white;
+    border: 2px solid #FF8C42;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 13px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    pointer-events: none;
+    z-index: 10002;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  `;
+
+  // Clear container and add elements
+  container.innerHTML = '';
+  container.style.position = 'relative';
+  container.style.minHeight = 'auto';
+  container.style.display = 'block';
+  container.appendChild(svg);
+  container.appendChild(legend);
+  container.appendChild(tooltip);
+
+  console.log('[Cora][Enrollment] Graph displayed successfully');
 }
 
 // Extract course information from a row
@@ -822,6 +1153,17 @@ function getCourseInfo(row) {
     if (classNumMatch) {
       classNumber = classNumMatch[1];
     }
+  }
+
+  // Extract termCode from URL (format: term=xxxx where xxxx is 4 digits)
+  let termCode = 'N/A';
+  const urlParams = new URLSearchParams(window.location.search);
+  const termParam = urlParams.get('term');
+  if (termParam && /^\d{4}$/.test(termParam)) {
+    termCode = termParam;
+    console.log(`[Cora][Extract] Extracted termCode from URL: ${termCode}`);
+  } else {
+    console.warn('[Cora][Extract] Could not extract valid termCode from URL');
   }
   
   // PRIORITY 1: Get the full page heading which contains the actual course code
@@ -915,6 +1257,7 @@ function getCourseInfo(row) {
     courseName,
     section,
     classNumber,
+    termCode,
     instructor: cleanInstructor,
     professor, // Cleaned version for searching
     status
