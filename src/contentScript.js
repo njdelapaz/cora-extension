@@ -1,5 +1,5 @@
 // Content Script - Runs on SIS pages
-const CORA_VERSION = '1.0.8';
+const CORA_VERSION = '1.0.9';
 const isInIframe = window !== window.top;
 const frameContext = isInIframe ? 'IFRAME' : 'MAIN PAGE';
 
@@ -807,10 +807,22 @@ function displayResults(result) {
 // Extract course information from a row
 function getCourseInfo(row) {
   console.log('[Cora][Extract] Extracting course information from row...');
-  
+
   const section = row.querySelector('[id$="_CLASS_SECTION"]')?.textContent.trim() || 'N/A';
   const instructor = row.querySelector('[id$="_INSTRUCTOR"]')?.textContent.trim() || 'N/A';
   const status = row.querySelector('[id$="_STATUS"]')?.textContent.trim() || 'N/A';
+
+  // Extract class number from the expanded details section
+  let classNumber = 'N/A';
+  const detailsRow = row.nextElementSibling;
+  if (detailsRow) {
+    // Look for "Class Number:" label and get the following text
+    const detailsText = detailsRow.textContent || '';
+    const classNumMatch = detailsText.match(/Class Number:\s*(\d+)/i);
+    if (classNumMatch) {
+      classNumber = classNumMatch[1];
+    }
+  }
   
   // PRIORITY 1: Get the full page heading which contains the actual course code
   // Try h2 with MuiTypography class first (most reliable structure)
@@ -902,13 +914,14 @@ function getCourseInfo(row) {
     courseNumber,
     courseName,
     section,
+    classNumber,
     instructor: cleanInstructor,
     professor, // Cleaned version for searching
     status
   };
-  
+
   console.log('[Cora][Extract] Extracted info:', extractedInfo);
-  
+
   return extractedInfo;
 }
 
@@ -966,7 +979,7 @@ function insertCoraButtonInContainer(container, shareButton, row, rowId) {
   coraButton.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     console.log('[Cora][Button] Button clicked!');
     const courseInfo = getCourseInfo(row);
     startCourseAnalysis(courseInfo);
